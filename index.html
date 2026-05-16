@@ -1,3 +1,292 @@
+ChatGPT
+
+
+
+
+varsity visa database (5)Master Database
+
+
+
+
+varsity_visa_smartmatch.html
+File
+what can you improve on?
+
+
+varsity_visa_smartmatch (1).html
+File
+evaluate file 
+
+
+
+Pasted text.txt
+Document
+
+Good. Now we move to the important part:
+
+real lead capture.
+You now have:
+
+live HTML app
+
+hosted online
+
+working form
+
+matching engine
+
+Now we connect:
+
+HTML App
+↓
+Google Apps Script
+↓
+Google Sheets
+↓
+Varsity Visa Lead Database
+This is the easiest production-grade MVP.
+
+STEP 1 — Create Google Sheet
+Create a new Google Sheet.
+
+Name it:
+
+Varsity Visa SmartMatch Leads
+Then create these columns exactly:
+
+A	B	C	D	E	F	G	H	I	J
+Timestamp	First Name	Surname	WhatsApp	Email	Programme	Budget	Qualification	Timeline	Recommendations
+STEP 2 — Open Apps Script
+Inside the Sheet:
+
+Extensions
+→
+Apps Script
+Delete everything there.
+
+STEP 3 — Paste This Script
+function doPost(e) {
+const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+
+const data = JSON.parse(e.postData.contents);
+
+sheet.appendRow([
+new Date(),
+data.firstName,
+data.surname,
+data.whatsapp,
+data.email,
+data.programme,
+data.budget,
+data.qualification,
+data.timeline,
+data.recommendations
+]);
+
+return ContentService
+.createTextOutput(JSON.stringify({
+success: true
+}))
+.setMimeType(ContentService.MimeType.JSON);
+}
+
+STEP 4 — Deploy Web App
+Click:
+
+Deploy
+→
+New Deployment
+Then:
+
+Type:
+Web app
+Execute as:
+Me
+Who has access:
+Anyone
+Then:
+
+Deploy
+Google gives you:
+
+Web App URL
+Looks like:
+
+https://script.google.com/macros/s/AKfycbxxxxxxxx/exec
+COPY IT.
+
+STEP 5 — Connect HTML File
+Inside your HTML file, find:
+
+function submitLead()
+Inside it, add:
+
+fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
+method: "POST",
+body: JSON.stringify({
+firstName: state.lead.firstName,
+surname: state.lead.surname,
+whatsapp: state.lead.whatsapp,
+email: state.lead.email,
+programme: state.form.programme,
+budget: state.form.budget,
+qualification: state.form.qualification,
+timeline: state.form.timeline,
+recommendations: state.results.map(r => r.name).join(", ")
+})
+});
+
+Replace:
+
+YOUR_GOOGLE_SCRIPT_URL_HERE
+with your actual Apps Script URL.
+
+STEP 6 — Upload Updated HTML Again
+Upload updated:
+
+index.html
+to GitHub again.
+
+GitHub Pages updates automatically.
+
+RESULT
+Now:
+
+Student fills form
+↓
+Student gets results
+↓
+Lead instantly appears in Google Sheets
+That becomes your:
+
+Varsity Visa admissions database.
+NEXT LEVEL (later)
+After this we can add:
+
+automatic email notifications
+
+WhatsApp alerts
+
+admin dashboard
+
+analytics
+
+lead scoring
+
+AI recommendations
+
+internal CRM
+
+document tracking
+
+appointment booking
+
+consultant assignment
+
+embassy intelligence layer
+
+But first:
+
+get the leads flowing.
+
+Do I need to, like, to be using the same email or same browser? For example, the GitHub is under Charles Ntekuwe, but I want to create Google Sheets under Varsity Visa. Does it matter? Or it has to be the same?
+
+No — they do NOT need to be the same.
+
+You can have:
+
+Service	Account
+GitHub hosting	Charles Mutikuwe account
+Google Sheets	Varsity Visa Google account
+That is completely fine.
+
+The connection works because:
+
+HTML website
+↓
+fetch()
+↓
+Google Apps Script URL
+↓
+Google Sheet
+The HTML file does not care which Google account owns the Sheet.
+
+Actually, using:
+
+Varsity Visa Google account
+for:
+
+Google Sheets
+
+Apps Script
+
+business email
+
+analytics
+
+is BETTER long-term.
+
+Why?
+
+Because later:
+
+staff can access leads
+
+easier business continuity
+
+cleaner ownership
+
+easier automation
+
+professional separation from personal accounts
+
+Important Thing
+The ONLY thing that matters is:
+
+The Apps Script deployment must be:
+
+Anyone
+not:
+
+Restricted
+Otherwise your public website cannot send leads into the Sheet.
+
+Recommended Structure
+GitHub
+Personal account is fine.
+
+Google Workspace / Gmail
+Use:
+
+varsityvisa@gmail.com
+or your business email.
+
+This is the correct architecture.
+
+
+saveLead();https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec,go(7)
+
+I see what you’re trying to do: inside the submit function, it should first save the lead to Google Sheets, then move the user to the results page. I’ll give you the exact structure and also update the HTML file using your Apps Script URL.
+
+I found the repaired file already has the correct validation structure and submitLead(){...saveLead();go(7)}. I’ll now replace saveLead() so it sends the lead to your Google Apps Script URL and still keeps local storage as backup.
+
+Thought for 27s
+Yes — your logic is correct:
+
+saveLead();
+go(7);
+I inserted your Google Apps Script URL into the file and updated saveLead() so it now:
+
+saves a backup in the visitor’s browser
+
+sends the lead to your Google Sheet
+
+then moves the student to the results page
+
+Download this version and upload it as your new index.html:
+
+Download Google Sheets connected HTML
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +358,41 @@ function emojiForCat(id){let f=PROGRAM_CATS.find(x=>x[0]===id); return f?f[1]:"�
 function money(n){return n?"$"+Number(n).toLocaleString():"TBC"}
 function whatsapp(msg){return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`}
 let state={step:0,form:{cat:"nursing",budget:"5000",qual:"a",timeline:"mid",country:"Any",ielts:"No"},lead:{firstName:"",surname:"",whatsapp:"",email:""},results:[],compare:[],selected:null};
-function saveLead(){try{let leads=JSON.parse(localStorage.getItem("varsityVisaStudyMatchLeads")||"[]"); leads.push({createdAt:new Date().toISOString(),lead:state.lead,form:state.form,results:state.results.map(r=>({country:r.country,university:r.university,programme:r.programme,tuition:r.tuition,match:r.match}))}); localStorage.setItem("varsityVisaStudyMatchLeads",JSON.stringify(leads));}catch(e){}}
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec";
+function saveLead(){
+  const payload = {
+    timestamp: new Date().toISOString(),
+    firstName: state.lead.firstName,
+    surname: state.lead.surname,
+    whatsapp: state.lead.whatsapp,
+    email: state.lead.email,
+    programme: labelForCat(state.form.cat),
+    budget: (BUDGETS.find(b=>b.id===state.form.budget)||{}).label || state.form.budget,
+    qualification: (QUALS.find(q=>q.id===state.form.qual)||{}).label || state.form.qual,
+    timeline: (TIMES.find(t=>t.id===state.form.timeline)||{}).label || state.form.timeline,
+    preferredCountry: state.form.country,
+    ielts: state.form.ielts,
+    recommendations: state.results.map(r => `${r.match}% - ${r.programme} at ${r.university} (${r.country}) - ${r.tuitionText || money(r.tuition)}`).join(" | "),
+    topRecommendation: state.results[0] ? `${state.results[0].programme} at ${state.results[0].university} (${state.results[0].country})` : "No match"
+  };
+
+  try {
+    let leads = JSON.parse(localStorage.getItem("varsityVisaStudyMatchLeads") || "[]");
+    leads.push(payload);
+    localStorage.setItem("varsityVisaStudyMatchLeads", JSON.stringify(leads));
+  } catch(e) {}
+
+  try {
+    fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    console.error("Google Sheets lead save failed", e);
+  }
+}
 function score(p){let b=BUDGETS.find(x=>x.id===state.form.budget); let sc=38; if(categoryOf(p)===state.form.cat)sc+=25; if(p.tuition&&p.tuition<=b.max)sc+=18; else if(p.tuition&&p.tuition<=b.max*1.15)sc+=10; else sc-=8; if(state.form.country==="Any"||p.country===state.form.country)sc+=8; let entry=lower(p.entry), level=lower(p.level); if(state.form.qual==="o"&&(entry.includes("o-level")||entry.includes("matric")||level.includes("diploma")))sc+=8; if(state.form.qual==="a"&&(entry.includes("a-level")||entry.includes("matric")))sc+=10; if(state.form.qual==="b"&&(level.includes("master")||entry.includes("bachelor")))sc+=12; if(state.form.ielts==="No"&&(lower(p.ielts).includes("not required")||lower(p.ielts).includes("moi")||lower(p.ielts).includes("online")))sc+=7; if(lower(p.scholarship).includes("yes"))sc+=5; if(lower(p.euRecognition).includes("yes"))sc+=4; if(state.form.timeline==="asap"&&p.country==="Poland")sc-=18; if(state.form.timeline==="asap"&&p.country==="Lithuania")sc-=10; return Math.max(28,Math.min(98,Math.round(sc)));}
 function getResults(){let b=BUDGETS.find(x=>x.id===state.form.budget); let rows=PROGRAMMES.filter(p=>categoryOf(p)===state.form.cat).filter(p=>state.form.country==="Any"||p.country===state.form.country).filter(p=>!p.tuition||p.tuition<=b.max*1.35).map(p=>({...p,match:score(p)})).sort((a,b)=>b.match-a.match||(a.tuition||999999)-(b.tuition||999999)); return rows.slice(0,18);}
 function progress(n){return `<div class="progress-meta"><span>Step ${n} of 4</span><span>${Math.round(n/4*100)}% complete</span></div><div class="progress"><i style="width:${n/4*100}%"></i></div>`}
@@ -102,8 +425,9 @@ function isValidPhone(v){let d=String(v||'').replace(/\D/g,'');return d.length>=
 function isLeadValid(){return isValidName(state.lead.firstName)&&isValidName(state.lead.surname)&&isValidPhone(state.lead.whatsapp)&&isValidEmail(state.lead.email)}
 function leadErrors(){let e=[]; if(!isValidName(state.lead.firstName))e.push('First name must have at least 2 letters.'); if(!isValidName(state.lead.surname))e.push('Surname must have at least 2 letters.'); if(!isValidPhone(state.lead.whatsapp))e.push('WhatsApp number must have 9–15 digits.'); if(!isValidEmail(state.lead.email))e.push('Email must look like name@example.com.'); return e.join('\n')}
 
-function enableLead(){let b=document.getElementById('leadBtn'); if(b)b.disabled=!isLeadValid()} function submitLead(){if(!isLeadValid()){alert(leadErrors());return;}saveLead();go(7)} function toggleCompare(i){let ix=state.compare.indexOf(i); if(ix>=0)state.compare.splice(ix,1); else {if(state.compare.length>=3){alert('You can compare up to 3 options.');return} state.compare.push(i)} render()} function restart(){state={step:0,form:{cat:"nursing",budget:"5000",qual:"a",timeline:"mid",country:"Any",ielts:"No"},lead:{firstName:"",surname:"",whatsapp:"",email:""},results:[],compare:[],selected:null};render()}
+function enableLead(){let b=document.getElementById('leadBtn'); if(b)b.disabled=!isLeadValid()} function submitLead(){if(!isLeadValid()){alert(leadErrors());return;}saveLead() https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec;go(7)} function toggleCompare(i){let ix=state.compare.indexOf(i); if(ix>=0)state.compare.splice(ix,1); else {if(state.compare.length>=3){alert('You can compare up to 3 options.');return} state.compare.push(i)} render()} function restart(){state={step:0,form:{cat:"nursing",budget:"5000",qual:"a",timeline:"mid",country:"Any",ielts:"No"},lead:{firstName:"",surname:"",whatsapp:"",email:""},results:[],compare:[],selected:null};render()}
 render();
 </script>
 </body>
 </html>
+
