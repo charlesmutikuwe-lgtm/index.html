@@ -102,7 +102,38 @@ function isValidPhone(v){let d=String(v||'').replace(/\D/g,'');return d.length>=
 function isLeadValid(){return isValidName(state.lead.firstName)&&isValidName(state.lead.surname)&&isValidPhone(state.lead.whatsapp)&&isValidEmail(state.lead.email)}
 function leadErrors(){let e=[]; if(!isValidName(state.lead.firstName))e.push('First name must have at least 2 letters.'); if(!isValidName(state.lead.surname))e.push('Surname must have at least 2 letters.'); if(!isValidPhone(state.lead.whatsapp))e.push('WhatsApp number must have 9–15 digits.'); if(!isValidEmail(state.lead.email))e.push('Email must look like name@example.com.'); return e.join('\n')}
 
-function enableLead(){let b=document.getElementById('leadBtn'); if(b)b.disabled=!isLeadValid()} function submitLead(){if(!isLeadValid()){alert(leadErrors());return;}saveLead()https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec;go(7)} function toggleCompare(i){let ix=state.compare.indexOf(i); if(ix>=0)state.compare.splice(ix,1); else {if(state.compare.length>=3){alert('You can compare up to 3 options.');return} state.compare.push(i)} render()} function restart(){state={step:0,form:{cat:"nursing",budget:"5000",qual:"a",timeline:"mid",country:"Any",ielts:"No"},lead:{firstName:"",surname:"",whatsapp:"",email:""},results:[],compare:[],selected:null};render()}
+function enableLead(){let b=document.getElementById('leadBtn'); if(b)b.disabled=!isLeadValid()} function saveLead() {
+
+  const payload = {
+    firstName: state.lead.firstName,
+    surname: state.lead.surname,
+    whatsapp: state.lead.whatsapp,
+    email: state.lead.email,
+    programme: state.form.programme,
+    budget: state.form.budget,
+    qualification: state.form.qualification,
+    timeline: state.form.timeline,
+    recommendations: state.results.map(r => r.name).join(", ")
+  };
+
+  // Save locally as backup
+  try {
+    const existing = JSON.parse(localStorage.getItem("varsityVisaLeads") || "[]");
+    existing.push(payload);
+    localStorage.setItem("varsityVisaLeads", JSON.stringify(existing));
+  } catch(e) {}
+
+  // Send to Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+  });
+
+}{if(!isLeadValid()){alert(leadErrors());return;}saveLead()https://script.google.com/macros/s/AKfycbwtNvHM3lQ5_vx1pNfRphuA4MFfxBEqivjPAkn-7SpzNAU7Cd5hBoGS4StE7vzNRmvC/exec;go(7)} function toggleCompare(i){let ix=state.compare.indexOf(i); if(ix>=0)state.compare.splice(ix,1); else {if(state.compare.length>=3){alert('You can compare up to 3 options.');return} state.compare.push(i)} render()} function restart(){state={step:0,form:{cat:"nursing",budget:"5000",qual:"a",timeline:"mid",country:"Any",ielts:"No"},lead:{firstName:"",surname:"",whatsapp:"",email:""},results:[],compare:[],selected:null};render()}
 render();
 </script>
 </body>
